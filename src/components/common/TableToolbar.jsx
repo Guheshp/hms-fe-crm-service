@@ -5,7 +5,7 @@ const TableToolbar = ({ search = "", onSearch, placeholder = "Search..." }) => {
   return (
     <Box
       sx={{
-        px: 2,
+        // px: 2,
         py: 2,
         display: "flex",
         justifyContent: "flex-end",

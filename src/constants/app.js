@@ -57,3 +57,22 @@ export const SUBSCRIPTION_STATUS_OPTIONS = [
     name: "Inactive",
   },
 ];
+
+export const PAYMENT_MODE_OPTIONS = [
+  {
+    id: 1,
+    name: "UPI",
+  },
+  {
+    id: 2,
+    name: "Card",
+  },
+  {
+    id: 3,
+    name: "Net Banking",
+  },
+  {
+    id: 4,
+    name: "Wallet",
+  },
+];

@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { deleteUser, get } from "../../api/users";
-import { errorAlert, successAlert } from "../../utils/alerts";
-
-import CustomTable from "../../components/common/CustomTable";
+import DataGridTable from "../../components/common/DataGridTable";
 import PageHeader from "../../components/common/PageHeader";
-import { columns } from "./columns";
+
+import { errorAlert, successAlert } from "../../utils/alerts";
 import { confirmDelete } from "../../utils/confirm";
-import TableToolbar from "../../components/common/TableToolbar";
+
+import { columns } from "./columns";
 import useDebounce from "../../hooks/useDebounce";
 
 const Users = () => {
@@ -25,6 +25,7 @@ const Users = () => {
   });
 
   const debouncedSearch = useDebounce(params.search);
+
   const [totalRecords, setTotalRecords] = useState(0);
 
   const getUsers = async () => {
@@ -36,8 +37,9 @@ const Users = () => {
         search: debouncedSearch,
       });
 
-      setUsers(response.data.data);
-      setTotalRecords(response.data.pagination.totalRecords);
+      setUsers(response.data.data || []);
+
+      setTotalRecords(response.data.pagination?.totalRecords || 0);
     } catch (error) {
       errorAlert(error.response?.data?.message || "Failed to fetch users.");
     } finally {
@@ -53,29 +55,6 @@ const Users = () => {
     navigate(`/users/${row.id}/edit`);
   };
 
-  const handlePageChange = (page) => {
-    setParams((prev) => ({
-      ...prev,
-      page,
-    }));
-  };
-
-  const handleRowsPerPageChange = (event) => {
-    setParams((prev) => ({
-      ...prev,
-      page: 1,
-      limit: Number(event.target.value),
-    }));
-  };
-
-  const handleSearch = (search) => {
-    setParams((prev) => ({
-      ...prev,
-      page: 1,
-      search,
-    }));
-  };
-
   const handleDelete = async (row) => {
     const result = await confirmDelete(
       "Delete User?",
@@ -89,44 +68,60 @@ const Users = () => {
 
       const response = await deleteUser(row.id);
 
-      console.log("Before Success Alert");
-
       successAlert(response.data.message);
-
-      console.log("After Success Alert");
 
       await getUsers();
     } catch (error) {
-      console.log(error);
-      console.log(error.response);
-
       errorAlert(error.response?.data?.message || "Failed to delete user.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSearch = (search) => {
+    setParams((prev) => ({
+      ...prev,
+      page: 1,
+      search,
+    }));
+  };
+
+  const handlePageChange = (page) => {
+    setParams((prev) => ({
+      ...prev,
+      page: page + 1,
+    }));
+  };
+
+  const handlePageSizeChange = (pageSize) => {
+    setParams((prev) => ({
+      ...prev,
+      page: 1,
+      limit: pageSize,
+    }));
+  };
+
   return (
     <>
       <PageHeader
         title="Users"
-        // subtitle="Manage all users in your organization."
+        subtitle="Manage users in your organization."
         buttonText="Create User"
         buttonIcon={<Add />}
         onButtonClick={() => navigate("/users/create")}
       />
 
-      <CustomTable
+      <DataGridTable
         columns={columns(handleEdit, handleDelete)}
         rows={users}
         loading={loading}
-        page={params.page}
-        rowsPerPage={params.limit}
-        totalRecords={totalRecords}
+        page={params.page - 1}
+        pageSize={params.limit}
+        rowCount={totalRecords}
         search={params.search}
         onSearch={handleSearch}
         onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     </>
   );

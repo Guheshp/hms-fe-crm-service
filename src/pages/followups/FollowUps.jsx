@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Add } from "@mui/icons-material";
-import { Card, CardContent, Drawer, Typography } from "@mui/material";
+import { Card, Drawer } from "@mui/material";
 
 import PageHeader from "../../components/common/PageHeader";
 import FollowUpForm from "./FollowUpForm";
@@ -9,13 +9,14 @@ import DataGridTable from "../../components/common/DataGridTable";
 import { columns } from "./Columns";
 import { errorAlert, successAlert } from "../../utils/alerts";
 import { confirmDelete } from "../../utils/confirm";
-// import FollowUpForm from "./FollowUpForm";
 
 const FollowUps = ({ id }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [followUps, setFollowUps] = useState([]);
+
+  const [search, setSearch] = useState("");
 
   const [params, setParams] = useState({
     page: 1,
@@ -89,11 +90,14 @@ const FollowUps = ({ id }) => {
     }
   };
 
+  const filteredFollowUps = followUps.filter((item) =>
+    JSON.stringify(item).toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <>
       <PageHeader
         title="Follow Ups"
-        subtitle="Manage all follow ups for this lead."
         buttonText="Create Follow Up"
         buttonIcon={<Add />}
         onButtonClick={handleCreate}
@@ -108,13 +112,14 @@ const FollowUps = ({ id }) => {
         }}
       >
         <DataGridTable
-          rows={followUps}
+          rows={filteredFollowUps}
           columns={columns(handleEdit, handleDelete)}
           loading={loading}
           page={params.page - 1}
           pageSize={params.limit}
-          rowCount={totalRecords}
-          hideSearch
+          rowCount={filteredFollowUps.length}
+          search={search}
+          onSearch={setSearch}
           onPageChange={(page) =>
             setParams((prev) => ({
               ...prev,

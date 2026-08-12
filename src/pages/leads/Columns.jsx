@@ -1,25 +1,10 @@
-import { Delete, Edit } from "@mui/icons-material";
-import {
-  Avatar,
-  Chip,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import StatusChip from "../../components/common/StatusChip";
-import { PRIORITY_OPTIONS, SOURCE_OPTIONS } from "../../constants/api";
+import { Avatar, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import {
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-} from "@mui/material";
+import StatusChip from "../../components/common/StatusChip";
 import ActionMenu from "./ActionMenu";
+
+import { PRIORITY_OPTIONS, SOURCE_OPTIONS } from "../../constants/api";
 
 export const columns = (
   handleEdit,
@@ -31,113 +16,109 @@ export const columns = (
     field: "hospitalname",
     headerName: "Hospital",
     width: 300,
+    sortable: false,
     renderCell: ({ row }) => (
-      <Stack direction="row" spacing={2} alignItems="center">
+      <div className="flex h-full items-center gap-3">
         <Avatar
           sx={{
-            width: 42,
-            height: 42,
+            width: 40,
+            height: 40,
             bgcolor: "primary.main",
-            fontWeight: 500,
+            fontSize: 14,
+            fontWeight: 700,
+            flexShrink: 0,
           }}
         >
           {row.hospitalname
             ?.split(" ")
+            .filter(Boolean)
             .map((word) => word[0])
             .join("")
             .substring(0, 2)
-            .toUpperCase()}
+            .toUpperCase() || "H"}
         </Avatar>
 
-        <Stack spacing={0.25}>
+        <div className="flex flex-col justify-center gap-1">
           <Typography
             component={Link}
             to={`/leads/${row.id}`}
             sx={{
-              textDecoration: "none",
-              color: "primary.main",
+              fontSize: 14,
               fontWeight: 500,
-              width: "fit-content",
+              color: "#0F172A",
+              textDecoration: "none",
+
               "&:hover": {
-                textDecoration: "underline",
+                color: "#2563EB",
               },
             }}
           >
-            {row.hospitalname}
+            {row.hospitalname || "-"}
           </Typography>
 
-          <Typography
-            component={Link}
-            to={`/leads/${row.id}`}
-            variant="caption"
-            sx={{
-              textDecoration: "none",
-              color: "text.secondary",
-              width: "fit-content",
-              "&:hover": {
-                color: "primary.main",
-                textDecoration: "underline",
-              },
-            }}
-          >
-            {row.leadnumber}
-          </Typography>
-        </Stack>
-      </Stack>
+          <StatusChip type="primary" label={row.leadnumber || "-"} />
+        </div>
+      </div>
     ),
   },
+
   {
-    field: "contact",
-    headerName: "Contact",
-    width: 220,
+    field: "contactperson",
+    headerName: "Contact Person",
+    width: 200,
     sortable: false,
     renderCell: ({ row }) => (
-      <Stack spacing={0.25}>
-        <Typography fontWeight={600}>
-          {row.firstname} {row.lastname}
-        </Typography>
+      <Typography
+        sx={{
+          fontSize: 14,
+          fontWeight: 500,
+          color: "#0F172A",
+        }}
+      >
+        {`${row.firstname || ""} ${row.lastname || ""}`}
+      </Typography>
+    ),
+  },
 
-        <Typography variant="caption" color="text.secondary">
-          {row.phone}
-        </Typography>
-      </Stack>
+  {
+    field: "phone",
+    headerName: "Phone",
+    width: 150,
+    renderCell: ({ row }) => (
+      <Typography
+        sx={{
+          fontSize: 14,
+          color: "#64748B",
+        }}
+      >
+        {row.phone || "-"}
+      </Typography>
     ),
   },
 
   {
     field: "email",
     headerName: "Email",
-    width: 260,
+    width: 250,
+    renderCell: ({ row }) => (
+      <Typography
+        sx={{
+          fontSize: 14,
+          color: "#64748B",
+        }}
+      >
+        {row.email || "-"}
+      </Typography>
+    ),
   },
+
   {
     field: "leadstatus",
-    headerName: "Lead Status",
-    width: 170,
+    headerName: "Status",
+    width: 150,
     renderCell: ({ row }) => (
-      <StatusChip type="primary" label={row.leadstatus} />
+      <StatusChip type="primary" label={row.leadstatus || "-"} />
     ),
-  },
-
-  {
-    field: "location",
-    headerName: "Location",
-    width: 220,
-    sortable: false,
-    renderCell: ({ row }) => (
-      <Stack spacing={0.25}>
-        <Typography>{row.city}</Typography>
-
-        <Typography variant="caption" color="text.secondary">
-          {row.statename}, {row.countryname}
-        </Typography>
-      </Stack>
-    ),
-  },
-
-  {
-    field: "assignedto",
-    headerName: "Assigned To",
-    width: 180,
   },
 
   {
@@ -149,11 +130,12 @@ export const columns = (
         (item) => item.id === Number(row.priority),
       );
 
-      const type = {
-        1: "success",
-        2: "warning",
-        3: "error",
-      }[row.priority];
+      const type =
+        {
+          1: "success",
+          2: "warning",
+          3: "error",
+        }[row.priority] || "info";
 
       return <StatusChip type={type} label={priority?.name || "-"} />;
     },
@@ -162,7 +144,7 @@ export const columns = (
   {
     field: "source",
     headerName: "Source",
-    width: 170,
+    width: 140,
     renderCell: ({ row }) => {
       const source = SOURCE_OPTIONS.find(
         (item) => item.id === Number(row.source),
@@ -173,14 +155,55 @@ export const columns = (
   },
 
   {
+    field: "location",
+    headerName: "Location",
+    width: 220,
+    sortable: false,
+    renderCell: ({ row }) => (
+      <Typography
+        sx={{
+          fontSize: 14,
+          color: "#64748B",
+        }}
+      >
+        {[row.city, row.statename, row.countryname]
+          .filter(Boolean)
+          .join(", ") || "-"}
+      </Typography>
+    ),
+  },
+
+  {
+    field: "assignedto",
+    headerName: "Assigned To",
+    width: 180,
+    renderCell: ({ row }) => (
+      <Typography
+        sx={{
+          fontSize: 14,
+          color: "#0F172A",
+        }}
+      >
+        {row.assignedto || "-"}
+      </Typography>
+    ),
+  },
+
+  {
     field: "expectedamount",
     headerName: "Expected Amount",
     width: 180,
     align: "right",
     headerAlign: "right",
     renderCell: ({ row }) => (
-      <Typography fontWeight={600}>
-        ₹ {Number(row.expectedamount || 0).toLocaleString("en-IN")}
+      <Typography
+        sx={{
+          fontSize: 14,
+          fontWeight: 500,
+          color: "#0F172A",
+        }}
+      >
+        ₹{Number(row.expectedamount || 0).toLocaleString("en-IN")}
       </Typography>
     ),
   },
@@ -188,14 +211,15 @@ export const columns = (
   {
     field: "remarks",
     headerName: "Remarks",
-    width: 280,
+    width: 250,
     sortable: false,
     renderCell: ({ row }) => (
       <Tooltip title={row.remarks || "-"}>
         <Typography
           noWrap
           sx={{
-            width: "100%",
+            fontSize: 14,
+            color: "#64748B",
           }}
         >
           {row.remarks || "-"}
@@ -206,8 +230,8 @@ export const columns = (
 
   {
     field: "actions",
-    headerName: "Actions",
-    width: 90,
+    headerName: "",
+    width: 80,
     sortable: false,
     filterable: false,
     disableColumnMenu: true,

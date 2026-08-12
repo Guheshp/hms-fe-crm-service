@@ -311,41 +311,38 @@ const CreateSubscription = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
 
         amount: order.amount,
-
         currency: order.currency,
 
         name: "Nexa CRM",
-
         description: "Subscription Payment",
 
         order_id: order.orderid,
 
-        method: {
-          upi: true,
-        },
-
-        handler: async function (response) {
+        handler: async (response) => {
           try {
             setLoading(true);
 
-            console.log("Razorpay Response:", response);
+            console.log("Razorpay Payment Response:", response);
 
             const verifyResponse = await verifyRazorpayPayment({
               razorpay_order_id: response.razorpay_order_id,
-
               razorpay_payment_id: response.razorpay_payment_id,
-
               razorpay_signature: response.razorpay_signature,
-
               subscription: payload,
             });
 
+            console.log("Payment Verification Response:", verifyResponse);
+
             if (verifyResponse?.data?.success) {
               successAlert(
-                "Payment successful and subscription created successfully.",
+                "Payment successful! Subscription created successfully.",
               );
 
-              navigate(`/leads/${leadId}`);
+              navigate(`/leads/${leadId}?tab=subscriptions`);
+            } else {
+              errorAlert(
+                verifyResponse?.data?.message || "Payment verification failed.",
+              );
             }
           } catch (error) {
             console.error("Payment verification error:", error);

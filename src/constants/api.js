@@ -11,6 +11,7 @@ export const API = {
   LEADSTATUS: "/leadstatus",
   PLANS: "/plans",
   PLANFEATURES: "/planfeatures",
+  PAYMENTS: "/payments",
 };
 
 export const PRIORITY_OPTIONS = [

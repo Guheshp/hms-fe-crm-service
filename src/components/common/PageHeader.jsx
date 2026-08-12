@@ -2,37 +2,31 @@ import { ArrowBack } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import { BUTTON_STYLES, COLORS } from "../../constants/theme";
+
 const PageHeader = ({
   title,
   subtitle,
-
-  // Back Button
   showBackButton = false,
   backText = "Back",
   backPath,
-
-  // Default Action Button
   buttonText,
   buttonIcon,
   onButtonClick,
-
-  // Custom Actions
+  buttonDisabled = false,
   actions,
+  mb = 2,
 }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (backPath) {
-      navigate(backPath);
-    } else {
-      navigate(-1);
-    }
+    backPath ? navigate(backPath) : navigate(-1);
   };
 
   return (
     <Box
       sx={{
-        mb: 3,
+        mb,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -40,25 +34,36 @@ const PageHeader = ({
         flexWrap: "wrap",
       }}
     >
-      {/* Left */}
       <Box>
-        <Typography variant="h5" fontWeight={700}>
+        <Typography
+          sx={{
+            fontSize: 24,
+            fontWeight: 600,
+            color: COLORS.text,
+            lineHeight: 1.2,
+          }}
+        >
           {title}
         </Typography>
 
         {subtitle && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          <Typography
+            sx={{
+              mt: 0.5,
+              fontSize: 14,
+              color: COLORS.textSecondary,
+            }}
+          >
             {subtitle}
           </Typography>
         )}
       </Box>
 
-      {/* Right */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 1.5,
+          gap: 1,
         }}
       >
         {showBackButton && (
@@ -66,6 +71,21 @@ const PageHeader = ({
             variant="outlined"
             startIcon={<ArrowBack />}
             onClick={handleBack}
+            sx={{
+              height: 40,
+              px: 2.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontSize: 14,
+              fontWeight: 600,
+              borderColor: COLORS.border,
+              color: COLORS.text,
+
+              "&:hover": {
+                borderColor: COLORS.primary,
+                backgroundColor: COLORS.primaryLight,
+              },
+            }}
           >
             {backText}
           </Button>
@@ -78,12 +98,8 @@ const PageHeader = ({
                 variant="contained"
                 startIcon={buttonIcon}
                 onClick={onButtonClick}
-                sx={{
-                  textTransform: "none",
-                  px: 3,
-                  borderRadius: 2,
-                  fontWeight: 600,
-                }}
+                disabled={buttonDisabled}
+                sx={BUTTON_STYLES}
               >
                 {buttonText}
               </Button>

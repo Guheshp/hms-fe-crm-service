@@ -2,29 +2,33 @@ import { Chip } from "@mui/material";
 
 const variants = {
   success: {
-    label: "Success",
-    bg: "#E8F5E9",
-    color: "#2E7D32",
+    bg: "#F0FDF4",
+    color: "#16A34A",
   },
+
   error: {
-    label: "Error",
-    bg: "#FDECEC",
-    color: "#D32F2F",
+    bg: "#FEF2F2",
+    color: "#DC2626",
   },
+
   warning: {
-    label: "Warning",
-    bg: "#FFF8E1",
-    color: "#F57C00",
+    bg: "#FFF7ED",
+    color: "#EA580C",
   },
+
   info: {
-    label: "Info",
-    bg: "#E3F2FD",
-    color: "#1565C0",
+    bg: "#EFF6FF",
+    color: "#2563EB",
   },
+
   primary: {
-    label: "Primary",
-    bg: "#EEF2FF",
-    color: "#4338CA",
+    bg: "#EFF6FF",
+    color: "#2563EB",
+  },
+
+  secondary: {
+    bg: "#F1F5F9",
+    color: "#475569",
   },
 };
 
@@ -35,23 +39,41 @@ const StatusChip = ({
   onClick,
   clickable = false,
 }) => {
-  const variant = variants[type];
+  const variant = variants[type] || variants.info;
 
   return (
     <Chip
-      label={label || variant.label}
+      label={label || "-"}
       size={size}
       clickable={clickable}
       onClick={onClick}
       sx={{
+        height: 28,
+
+        px: 0.5,
+
+        fontSize: 12,
+
         fontWeight: 600,
-        borderRadius: "8px",
-        bgcolor: variant.bg,
+
+        borderRadius: 2,
+
+        backgroundColor: variant.bg,
+
         color: variant.color,
+
+        border: "1px solid transparent",
+
         cursor: clickable ? "pointer" : "default",
+
+        "& .MuiChip-label": {
+          px: 1,
+        },
+
         "&:hover": clickable
           ? {
-              opacity: 0.9,
+              backgroundColor: variant.bg,
+              opacity: 0.85,
             }
           : {},
       }}

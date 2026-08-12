@@ -144,7 +144,7 @@ const Leads = () => {
   return (
     <>
       <PageHeader
-        title={`Leads (${totalRecords})`}
+        title={`All Leads (${totalRecords})`}
         buttonText="Create Lead"
         buttonIcon={<Add />}
         onButtonClick={() => navigate("/leads/create")}

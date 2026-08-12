@@ -99,11 +99,12 @@ const Dropdown = ({
           {label && (
             <InputLabel
               shrink
+              htmlFor={name}
               sx={{
                 position: "static",
                 transform: "none",
                 mb: 1,
-                fontWeight: 600,
+                fontWeight: 400,
                 fontSize: "0.95rem",
                 color: "#334155",
 
