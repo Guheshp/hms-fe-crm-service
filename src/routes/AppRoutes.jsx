@@ -17,7 +17,10 @@ import userRoutes from "./userRoutes";
 import enquiriesRoutes from "./Enquiries";
 import leadsRoutes from "./LeadRoutes";
 import planRoutes from "./PlanRoute";
+
+import paymentRoutes from "./PaymentRoutes";
 import subscriptionsRoutes from "./Subscriptions";
+import ReportRoutes from "./ReportRoutes";
 
 const router = createBrowserRouter([
   // Public Routes
@@ -62,6 +65,8 @@ const router = createBrowserRouter([
       ...leadsRoutes,
       ...planRoutes,
       ...subscriptionsRoutes,
+      ...paymentRoutes,
+      ...ReportRoutes,
     ],
   },
 ]);

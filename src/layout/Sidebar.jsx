@@ -5,14 +5,12 @@ import {
   Inventory2,
   Payments,
   People,
-  Settings,
   Subscriptions,
   TrendingUp,
 } from "@mui/icons-material";
 
 import {
   Box,
-  Divider,
   Drawer,
   List,
   ListItemButton,
@@ -35,11 +33,6 @@ const menuItems = [
     label: "Dashboard",
     icon: <Dashboard />,
     path: "/dashboard",
-  },
-  {
-    label: "Users",
-    icon: <People />,
-    path: "/users",
   },
   {
     label: "Enquiries",
@@ -71,9 +64,14 @@ const menuItems = [
     icon: <Assessment />,
     path: "/reports",
   },
+  {
+    label: "Users",
+    icon: <People />,
+    path: "/users",
+  },
 ];
 
-const Sidebar = ({ collapsed = false }) => {
+const Sidebar = ({ collapsed }) => {
   const location = useLocation();
 
   const isActive = (path) => {
@@ -89,91 +87,62 @@ const Sidebar = ({ collapsed = false }) => {
   const renderMenuItem = (item) => {
     const active = isActive(item.path);
 
-    const button = (
+    const menuButton = (
       <ListItemButton
         component={Link}
         to={item.path}
         selected={active}
         sx={{
-          position: "relative",
-
-          minHeight: 50,
-
+          minHeight: 52,
           mb: 1,
-
           px: collapsed ? 0 : 2,
-
           justifyContent: collapsed ? "center" : "flex-start",
-
           borderRadius: 3,
+          position: "relative",
+          transition: "all 0.2s ease",
 
           color: active ? COLORS.primary : COLORS.textSecondary,
 
-          backgroundColor: active ? "#E8F0FE" : "transparent",
-
-          border: active ? "1px solid #DBEAFE" : "1px solid transparent",
-
-          boxShadow: active ? "0 2px 8px rgba(37, 99, 235, 0.08)" : "none",
-
-          transition: "all 0.2s ease",
-
-          "& .MuiListItemIcon-root": {
-            minWidth: collapsed ? 0 : 40,
-
-            color: "inherit",
-
-            justifyContent: "center",
-
-            transform: active ? "scale(1.1)" : "scale(1)",
-
-            transition: "all 0.2s ease",
-          },
-
-          "& .MuiListItemText-primary": {
-            fontSize: 14,
-
-            fontWeight: active ? 600 : 500,
-          },
+          backgroundColor: active ? "#EEF4FF" : "transparent",
 
           "&:hover": {
-            backgroundColor: "#EEF4FF",
-
+            backgroundColor: "#F8FAFC",
             color: COLORS.primary,
-
-            transform: "translateX(4px)",
           },
 
           "&.Mui-selected": {
-            backgroundColor: "#E8F0FE",
-
+            backgroundColor: "#EEF4FF",
             color: COLORS.primary,
           },
 
           "&.Mui-selected:hover": {
-            backgroundColor: "#E8F0FE",
+            backgroundColor: "#EEF4FF",
           },
 
           ...(active && {
             "&::before": {
               content: '""',
-
               position: "absolute",
-
-              left: -6,
-
+              left: 0,
               top: "50%",
-
               transform: "translateY(-50%)",
-
               width: 4,
-
               height: 28,
-
-              borderRadius: 4,
-
+              borderRadius: 10,
               backgroundColor: COLORS.primary,
             },
           }),
+
+          "& .MuiListItemIcon-root": {
+            minWidth: collapsed ? 0 : 40,
+            justifyContent: "center",
+            color: "inherit",
+          },
+
+          "& .MuiListItemText-primary": {
+            fontSize: 14,
+            fontWeight: active ? 600 : 500,
+          },
         }}
       >
         <ListItemIcon>{item.icon}</ListItemIcon>
@@ -182,13 +151,15 @@ const Sidebar = ({ collapsed = false }) => {
       </ListItemButton>
     );
 
-    return collapsed ? (
-      <Tooltip key={item.path} title={item.label} placement="right" arrow>
-        {button}
-      </Tooltip>
-    ) : (
-      <Box key={item.path}>{button}</Box>
-    );
+    if (collapsed) {
+      return (
+        <Tooltip key={item.path} title={item.label} placement="right" arrow>
+          {menuButton}
+        </Tooltip>
+      );
+    }
+
+    return <Box key={item.path}>{menuButton}</Box>;
   };
 
   return (
@@ -200,28 +171,24 @@ const Sidebar = ({ collapsed = false }) => {
 
         "& .MuiDrawer-paper": {
           width: collapsed ? collapsedWidth : drawerWidth,
-          boxSizing: "border-box",
-          transition: "width 0.25s ease",
-          backgroundColor: "#FFFFFF",
-          borderRight: "1px solid #DCE4EE",
+          transition: "width 0.3s ease",
           overflowX: "hidden",
-          display: "flex",
-          flexDirection: "column",
+          boxSizing: "border-box",
+          backgroundColor: "#FFFFFF",
+          borderRight: "1px solid #E2E8F0",
         },
       }}
     >
-      {/* Header */}
+      {/* Logo */}
 
       <Box
         sx={{
-          height: 72,
-          minHeight: 72,
-          px: collapsed ? 0 : 3,
+          height: 66,
+          px: 2,
           display: "flex",
           alignItems: "center",
           justifyContent: collapsed ? "center" : "flex-start",
-          backgroundColor: "#FFFFFF",
-          borderBottom: "1px solid #D7E0EA",
+          borderBottom: "1px solid #E2E8F0",
         }}
       >
         {collapsed ? (
@@ -229,7 +196,7 @@ const Sidebar = ({ collapsed = false }) => {
             sx={{
               width: 42,
               height: 42,
-              borderRadius: 2,
+              borderRadius: 3,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -239,7 +206,7 @@ const Sidebar = ({ collapsed = false }) => {
               fontSize: 18,
             }}
           >
-            {APP_NAME?.charAt(0)?.toUpperCase()}
+            {APP_NAME?.charAt(0)}
           </Box>
         ) : (
           <Box
@@ -253,7 +220,7 @@ const Sidebar = ({ collapsed = false }) => {
               sx={{
                 width: 42,
                 height: 42,
-                borderRadius: 2,
+                borderRadius: 3,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -263,7 +230,7 @@ const Sidebar = ({ collapsed = false }) => {
                 fontSize: 18,
               }}
             >
-              {APP_NAME?.charAt(0)?.toUpperCase()}
+              {APP_NAME?.charAt(0)}
             </Box>
 
             <Box>
@@ -271,8 +238,6 @@ const Sidebar = ({ collapsed = false }) => {
                 sx={{
                   fontSize: 18,
                   fontWeight: 700,
-                  color: COLORS.text,
-                  lineHeight: 1.2,
                 }}
               >
                 {APP_NAME}
@@ -284,50 +249,23 @@ const Sidebar = ({ collapsed = false }) => {
                   color: COLORS.textSecondary,
                 }}
               >
-                Healthcare Management
+                Healthcare CRM
               </Typography>
             </Box>
           </Box>
         )}
       </Box>
 
-      {/* Navigation */}
+      {/* Menu */}
 
       <Box
         sx={{
           flex: 1,
-          px: collapsed ? 1 : 1.5,
-          py: 2,
+          p: collapsed ? 1 : 1.5,
           overflowY: "auto",
-
-          "&::-webkit-scrollbar": {
-            width: 4,
-          },
-
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#CBD5E1",
-            borderRadius: 10,
-          },
         }}
       >
         <List disablePadding>{menuItems.map(renderMenuItem)}</List>
-      </Box>
-
-      {/* Settings */}
-
-      <Box
-        sx={{
-          px: collapsed ? 1 : 1.5,
-          pb: 2,
-        }}
-      >
-        <Divider sx={{ mb: 1.5 }} />
-
-        {renderMenuItem({
-          label: "Settings",
-          icon: <Settings />,
-          path: "/settings",
-        })}
       </Box>
     </Drawer>
   );

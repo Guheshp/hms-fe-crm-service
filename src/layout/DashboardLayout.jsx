@@ -1,19 +1,30 @@
-import { Box, Toolbar } from "@mui/material";
+import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PrivateHeader from "./PrivateHeader";
 import Sidebar from "./Sidebar";
 
 const DashboardLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    const savedState = localStorage.getItem("sidebar-collapsed");
+
+    return savedState ? JSON.parse(savedState) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("sidebar-collapsed", JSON.stringify(collapsed));
+  }, [collapsed]);
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar */}
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+      }}
+    >
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
-      {/* Main Content */}
       <Box
         sx={{
           flexGrow: 1,
@@ -23,13 +34,8 @@ const DashboardLayout = () => {
           bgcolor: "background.default",
         }}
       >
-        {/* Header */}
         <PrivateHeader collapsed={collapsed} setCollapsed={setCollapsed} />
 
-        {/* Push content below AppBar */}
-        {/* <Toolbar /> */}
-
-        {/* Page Content */}
         <Box
           component="main"
           sx={{

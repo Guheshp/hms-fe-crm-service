@@ -6,6 +6,7 @@ import {
   Typography,
   CircularProgress,
   Box,
+  Button,
 } from "@mui/material";
 
 import ReadOnlyField from "../../components/common/ReadOnlyField";
@@ -13,10 +14,13 @@ import ReadOnlyField from "../../components/common/ReadOnlyField";
 import { getLeadById } from "../../api/leads";
 import { PRIORITY_OPTIONS, SOURCE_OPTIONS } from "../../constants/api";
 import { errorAlert } from "../../utils/alerts";
+import { BUTTON_STYLES, COLORS } from "../../constants/theme";
+import { useNavigate } from "react-router-dom";
 
 const Details = ({ id }) => {
   const [lead, setLead] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getLead = async () => {
     try {
@@ -67,6 +71,21 @@ const Details = ({ id }) => {
         borderColor: "divider",
       }}
     >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          m: 2,
+        }}
+      >
+        <Button
+          onClick={() => navigate(`/leads/edit/${id}`)}
+          sx={BUTTON_STYLES}
+          variant="contained"
+        >
+          Edit Lead
+        </Button>
+      </Box>
       <CardContent sx={{ p: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>

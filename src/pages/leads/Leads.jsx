@@ -15,10 +15,19 @@ import CustomTable from "../../components/common/CustomTable";
 import { columns } from "./Columns";
 import DataGridTable from "../../components/common/DataGridTable";
 import { getLeadStatuses } from "../../api/leadStatus";
+import useImport from "../../hooks/useImport";
+import useExport from "../../hooks/useExport";
 
 const Leads = () => {
   const navigate = useNavigate();
 
+  const { handleImport, loading: importLoading } = useImport([]);
+
+  const { handleExport, loading: exportLoading } = useExport([]);
+  const [selectedRows, setSelectedRows] = useState({
+    type: "include",
+    ids: new Set(),
+  });
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -141,6 +150,45 @@ const Leads = () => {
     }));
   };
 
+  const handleSelectionChange = (model) => {
+    console.log(model);
+    setSelectedRows(model);
+  };
+
+  const handleBulkDelete = async () => {
+    const selectedIds = Array.from(selectedRows.ids);
+
+    if (!selectedIds.length) return;
+
+    const result = await confirmDelete(
+      "Delete Leads?",
+      `Are you sure you want to delete ${selectedIds.length} selected Leads?`,
+    );
+
+    if (!result.isConfirmed) return;
+
+    try {
+      setLoading(true);
+
+      // for (const id of selectedIds) {
+      //   await deleteEnquiry(id);
+      // }
+
+      successAlert("Selected Leads deleted successfully.");
+
+      setSelectedRows({
+        type: "include",
+        ids: new Set(),
+      });
+
+      await getAllLeads();
+    } catch (error) {
+      errorAlert(error.response?.data?.message || "Failed to delete Leads.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -164,6 +212,12 @@ const Leads = () => {
         rowCount={totalRecords}
         search={params.search}
         onSearch={handleSearch}
+        onDelete={handleBulkDelete}
+        onImport={handleImport}
+        onExport={handleExport}
+        checkboxSelection
+        rowSelectionModel={selectedRows}
+        onRowSelectionModelChange={handleSelectionChange}
         onPageChange={(page) =>
           setParams((prev) => ({
             ...prev,

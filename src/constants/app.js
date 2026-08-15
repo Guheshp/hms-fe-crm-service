@@ -53,7 +53,7 @@ export const SUBSCRIPTION_STATUS_OPTIONS = [
     name: "Active",
   },
   {
-    id: 2,
+    id: -1,
     name: "Inactive",
   },
 ];
@@ -74,5 +74,12 @@ export const PAYMENT_MODE_OPTIONS = [
   {
     id: 4,
     name: "Wallet",
+  },
+];
+
+export const PAYMENT_GATEWAY_OPTIONS = [
+  {
+    id: 1,
+    name: "Razorpay",
   },
 ];

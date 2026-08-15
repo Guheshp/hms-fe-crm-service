@@ -2,6 +2,7 @@ import { Avatar, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import StatusChip from "../../components/common/StatusChip";
+import CellContent from "../../components/common/CellContent";
 import ActionMenu from "./ActionMenu";
 
 import { PRIORITY_OPTIONS, SOURCE_OPTIONS } from "../../constants/api";
@@ -12,6 +13,20 @@ export const columns = (
   leadStatuses,
   handleStatusChange,
 ) => [
+  // ================= LEAD NUMBER =================
+
+  {
+    field: "leadnumber",
+    headerName: "Lead Number",
+    width: 200,
+    sortable: false,
+    renderCell: ({ row }) => (
+      <StatusChip type="warning" label={row.leadnumber || "-"} />
+    ),
+  },
+
+  // ================= HOSPITAL =================
+
   {
     field: "hospitalname",
     headerName: "Hospital",
@@ -47,7 +62,6 @@ export const columns = (
               fontWeight: 500,
               color: "#0F172A",
               textDecoration: "none",
-
               "&:hover": {
                 color: "#2563EB",
               },
@@ -55,12 +69,12 @@ export const columns = (
           >
             {row.hospitalname || "-"}
           </Typography>
-
-          <StatusChip type="primary" label={row.leadnumber || "-"} />
         </div>
       </div>
     ),
   },
+
+  // ================= CONTACT PERSON =================
 
   {
     field: "contactperson",
@@ -68,49 +82,59 @@ export const columns = (
     width: 200,
     sortable: false,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-          fontWeight: 500,
-          color: "#0F172A",
-        }}
-      >
-        {`${row.firstname || ""} ${row.lastname || ""}`}
-      </Typography>
+      <CellContent>
+        <Typography
+          sx={{
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          {`${row.firstname || ""} ${row.lastname || ""}`.trim() || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
+
+  // ================= PHONE =================
 
   {
     field: "phone",
     headerName: "Phone",
     width: 150,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-          color: "#64748B",
-        }}
-      >
-        {row.phone || "-"}
-      </Typography>
+      <CellContent>
+        <Typography
+          sx={{
+            fontSize: 14,
+          }}
+        >
+          {row.phone || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
+
+  // ================= EMAIL =================
 
   {
     field: "email",
     headerName: "Email",
     width: 250,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-          color: "#64748B",
-        }}
-      >
-        {row.email || "-"}
-      </Typography>
+      <CellContent>
+        <Typography
+          noWrap
+          sx={{
+            fontSize: 14,
+          }}
+        >
+          {row.email || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
+
+  // ================= STATUS =================
 
   {
     field: "leadstatus",
@@ -121,6 +145,8 @@ export const columns = (
     ),
   },
 
+  // ================= PRIORITY =================
+
   {
     field: "priority",
     headerName: "Priority",
@@ -130,16 +156,16 @@ export const columns = (
         (item) => item.id === Number(row.priority),
       );
 
-      const type =
-        {
-          1: "success",
-          2: "warning",
-          3: "error",
-        }[row.priority] || "info";
-
-      return <StatusChip type={type} label={priority?.name || "-"} />;
+      return (
+        <StatusChip
+          color={priority?.color || "info"}
+          label={priority?.name || "-"}
+        />
+      );
     },
   },
+
+  // ================= SOURCE =================
 
   {
     field: "source",
@@ -154,40 +180,49 @@ export const columns = (
     },
   },
 
+  // ================= LOCATION =================
+
   {
     field: "location",
     headerName: "Location",
     width: 220,
     sortable: false,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-          color: "#64748B",
-        }}
-      >
-        {[row.city, row.statename, row.countryname]
-          .filter(Boolean)
-          .join(", ") || "-"}
-      </Typography>
+      <CellContent>
+        <Typography
+          sx={{
+            fontSize: 14,
+          }}
+        >
+          {[row.city, row.statename, row.countryname]
+            .filter(Boolean)
+            .join(", ") || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
+
+  // ================= ASSIGNED TO =================
 
   {
     field: "assignedto",
     headerName: "Assigned To",
     width: 180,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-          color: "#0F172A",
-        }}
-      >
-        {row.assignedto || "-"}
-      </Typography>
+      <CellContent>
+        <Typography
+          sx={{
+            fontSize: 14,
+            color: "#0F172A",
+          }}
+        >
+          {row.assignedto || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
+
+  // ================= EXPECTED AMOUNT =================
 
   {
     field: "expectedamount",
@@ -196,17 +231,22 @@ export const columns = (
     align: "right",
     headerAlign: "right",
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-          fontWeight: 500,
-          color: "#0F172A",
-        }}
-      >
-        ₹{Number(row.expectedamount || 0).toLocaleString("en-IN")}
-      </Typography>
+      <CellContent>
+        <Typography
+          sx={{
+            width: "100%",
+            textAlign: "right",
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          ₹{Number(row.expectedamount || 0).toLocaleString("en-IN")}
+        </Typography>
+      </CellContent>
     ),
   },
+
+  // ================= REMARKS =================
 
   {
     field: "remarks",
@@ -214,23 +254,26 @@ export const columns = (
     width: 250,
     sortable: false,
     renderCell: ({ row }) => (
-      <Tooltip title={row.remarks || "-"}>
-        <Typography
-          noWrap
-          sx={{
-            fontSize: 14,
-            color: "#64748B",
-          }}
-        >
-          {row.remarks || "-"}
-        </Typography>
-      </Tooltip>
+      <CellContent>
+        <Tooltip title={row.remarks || "-"}>
+          <Typography
+            noWrap
+            sx={{
+              fontSize: 14,
+            }}
+          >
+            {row.remarks || "-"}
+          </Typography>
+        </Tooltip>
+      </CellContent>
     ),
   },
 
+  // ================= ACTIONS =================
+
   {
     field: "actions",
-    headerName: "",
+    headerName: "Action",
     width: 80,
     sortable: false,
     filterable: false,

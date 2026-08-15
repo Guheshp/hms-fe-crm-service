@@ -14,13 +14,19 @@ import CustomTable from "../../components/common/CustomTable";
 import { columns } from "./Columns";
 import Swal from "sweetalert2";
 import DataGridTable from "../../components/common/DataGridTable";
+import useImport from "../../hooks/useImport";
+import useExport from "../../hooks/useExport";
 
 const Enquiries = () => {
   const navigate = useNavigate();
 
+  const [selectedRows, setSelectedRows] = useState({
+    type: "include",
+    ids: new Set(),
+  });
+  console.log(selectedRows);
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [params, setParams] = useState({
     page: 1,
     limit: 10,
@@ -30,6 +36,10 @@ const Enquiries = () => {
   const debouncedSearch = useDebounce(params.search);
 
   const [totalRecords, setTotalRecords] = useState(0);
+
+  const { handleImport, loading: importLoading } = useImport([]);
+
+  const { handleExport, loading: exportLoading } = useExport([]);
 
   const getAllEnquiries = async () => {
     try {
@@ -114,6 +124,47 @@ const Enquiries = () => {
     }));
   };
 
+  const handleSelectionChange = (model) => {
+    console.log(model);
+    setSelectedRows(model);
+  };
+
+  const handleBulkDelete = async () => {
+    const selectedIds = Array.from(selectedRows.ids);
+
+    if (!selectedIds.length) return;
+
+    const result = await confirmDelete(
+      "Delete Enquiries?",
+      `Are you sure you want to delete ${selectedIds.length} selected enquiries?`,
+    );
+
+    if (!result.isConfirmed) return;
+
+    try {
+      setLoading(true);
+
+      // for (const id of selectedIds) {
+      //   await deleteEnquiry(id);
+      // }
+
+      successAlert("Selected enquiries deleted successfully.");
+
+      setSelectedRows({
+        type: "include",
+        ids: new Set(),
+      });
+
+      await getAllEnquiries();
+    } catch (error) {
+      errorAlert(
+        error.response?.data?.message || "Failed to delete enquiries.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -122,7 +173,6 @@ const Enquiries = () => {
         buttonIcon={<Add />}
         onButtonClick={() => navigate("/enquiries/create")}
       />
-
       <DataGridTable
         rows={enquiries}
         columns={columns(handleEdit, handleDelete, handleConvert)}
@@ -132,6 +182,12 @@ const Enquiries = () => {
         rowCount={totalRecords}
         search={params.search}
         onSearch={handleSearch}
+        onDelete={handleBulkDelete}
+        onImport={handleImport}
+        onExport={handleExport}
+        checkboxSelection
+        rowSelectionModel={selectedRows}
+        onRowSelectionModelChange={handleSelectionChange}
         onPageChange={(page) =>
           setParams((prev) => ({
             ...prev,

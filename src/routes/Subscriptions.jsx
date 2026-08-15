@@ -1,14 +1,15 @@
 import CreateSubscription from "../pages/leads/subscriptions/CreateSubscription";
+import Subscriptions from "../pages/subscriptions/Subscriptions";
 
 const subscriptionsRoutes = [
   {
     path: "/subscriptions/:leadid/create",
     element: <CreateSubscription />,
   },
-  // {
-  //   path: "/plans/create",
-  //   element: <CreatePlan />,
-  // },
+  {
+    path: "/subscriptions",
+    element: <Subscriptions />,
+  },
   // {
   //   path: "plans/edit/:id",
   //   element: <PlanEdit />,

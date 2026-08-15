@@ -2,15 +2,16 @@ import moment from "moment";
 
 import { Delete, Edit } from "@mui/icons-material";
 
-import { Avatar, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { IconButton, Stack, Tooltip, Typography } from "@mui/material";
 
-import StatusChip from "../../../components/common/StatusChip";
+import StatusChip from "../../components/common/StatusChip";
+import CellContent from "../../components/common/CellContent";
 
 import {
   PAYMENT_GATEWAY_OPTIONS,
   PAYMENT_MODE_OPTIONS,
   SUBSCRIPTION_STATUS_OPTIONS,
-} from "../../../constants/app";
+} from "../../constants/app";
 
 export const Columns = (handleEdit, handleDelete) => [
   {
@@ -27,17 +28,13 @@ export const Columns = (handleEdit, handleDelete) => [
     headerName: "Transaction ID",
     width: 250,
     renderCell: ({ row }) => (
-      <Tooltip title={row.transactionid || "-"}>
-        <Typography
-          noWrap
-          sx={{
-            fontSize: 14,
-            color: "#64748B",
-          }}
-        >
-          {row.transactionid || "-"}
-        </Typography>
-      </Tooltip>
+      <CellContent>
+        <Tooltip title={row.transactionid || "-"}>
+          <Typography noWrap sx={{ fontSize: 14 }}>
+            {row.transactionid || "-"}
+          </Typography>
+        </Tooltip>
+      </CellContent>
     ),
   },
 
@@ -46,15 +43,13 @@ export const Columns = (handleEdit, handleDelete) => [
     headerName: "Payment Date",
     width: 150,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-        }}
-      >
-        {row.paymentdate
-          ? moment(Number(row.paymentdate)).format("DD/MM/YYYY")
-          : "-"}
-      </Typography>
+      <CellContent>
+        <Typography sx={{ fontSize: 14 }}>
+          {row.paymentdate
+            ? moment(Number(row.paymentdate)).format("DD/MM/YYYY")
+            : "-"}
+        </Typography>
+      </CellContent>
     ),
   },
 
@@ -64,26 +59,24 @@ export const Columns = (handleEdit, handleDelete) => [
     width: 240,
     sortable: false,
     renderCell: ({ row }) => (
-      <Stack spacing={0.5}>
-        <Typography
-          sx={{
-            fontSize: 14,
-            fontWeight: 500,
-          }}
-        >
-          Subscription: {row.currency || "INR"}{" "}
-          {Number(row.subscriptionamount || 0).toLocaleString("en-IN")}
-        </Typography>
+      <CellContent>
+        <Stack spacing={0.5}>
+          <Typography
+            sx={{
+              fontSize: 14,
+              fontWeight: 500,
+            }}
+          >
+            Subscription: {row.currency || "INR"}{" "}
+            {Number(row.subscriptionamount || 0).toLocaleString("en-IN")}
+          </Typography>
 
-        <Typography
-          sx={{
-            fontSize: 13,
-          }}
-        >
-          Total: {row.currency || "INR"}{" "}
-          {Number(row.totalamount || 0).toLocaleString("en-IN")}
-        </Typography>
-      </Stack>
+          <Typography sx={{ fontSize: 13 }}>
+            Total: {row.currency || "INR"}{" "}
+            {Number(row.totalamount || 0).toLocaleString("en-IN")}
+          </Typography>
+        </Stack>
+      </CellContent>
     ),
   },
 
@@ -92,14 +85,12 @@ export const Columns = (handleEdit, handleDelete) => [
     headerName: "Discount",
     width: 130,
     renderCell: ({ row }) => (
-      <Typography
-        sx={{
-          fontSize: 14,
-        }}
-      >
-        {row.currency || "INR"}{" "}
-        {Number(row.discount || 0).toLocaleString("en-IN")}
-      </Typography>
+      <CellContent>
+        <Typography sx={{ fontSize: 14 }}>
+          {row.currency || "INR"}{" "}
+          {Number(row.discount || 0).toLocaleString("en-IN")}
+        </Typography>
+      </CellContent>
     ),
   },
 
@@ -135,15 +126,17 @@ export const Columns = (handleEdit, handleDelete) => [
       );
 
       return (
-        <Typography
-          sx={{
-            fontSize: 14,
-            color: "#0F172A",
-            fontWeight: 500,
-          }}
-        >
-          {gateway?.name || "-"}
-        </Typography>
+        <CellContent>
+          <Typography
+            sx={{
+              fontSize: 14,
+              color: "#0F172A",
+              fontWeight: 500,
+            }}
+          >
+            {gateway?.name || "-"}
+          </Typography>
+        </CellContent>
       );
     },
   },
@@ -168,7 +161,7 @@ export const Columns = (handleEdit, handleDelete) => [
 
   {
     field: "actions",
-    headerName: "",
+    headerName: "Action",
     width: 100,
     sortable: false,
     filterable: false,

@@ -92,105 +92,88 @@ const Plans = () => {
 
       <Grid container spacing={3}>
         {plans.map((plan) => {
-          const billingCycle = BILLING_CYCLE_OPTIONS?.find(
+          const billingCycle = BILLING_CYCLE_OPTIONS.find(
             (item) => item.id === Number(plan.billingcycle),
           );
 
           return (
-            <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={plan.id}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }} key={plan.planid}>
               <Card
                 elevation={0}
                 sx={{
                   height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
                   borderRadius: 4,
                   border: "1px solid",
                   borderColor: "divider",
-                  overflow: "hidden",
-                  transition: "all 0.25s ease",
+                  transition: "0.3s",
+
                   "&:hover": {
-                    transform: "translateY(-6px)",
-                    boxShadow: "0 12px 30px rgba(15, 23, 42, 0.10)",
-                    borderColor: "primary.main",
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 12px 24px rgba(0,0,0,.08)",
                   },
                 }}
               >
-                {/* Header */}
-                <Box
-                  sx={{
-                    px: 3,
-                    py: 3,
-                    bgcolor: "#F8FAFC",
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <Box>
-                      <Typography variant="h6" fontWeight={700}>
+                <CardContent className="flex h-full flex-col p-6">
+                  {/* Header */}
+
+                  <div className="mb-6 flex items-start justify-between">
+                    <div>
+                      <Typography
+                        sx={{
+                          fontSize: 22,
+                          fontWeight: 700,
+                        }}
+                      >
                         {plan.name}
                       </Typography>
 
                       <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 0.5 }}
+                        sx={{
+                          fontSize: 14,
+                          color: "text.secondary",
+                        }}
                       >
                         {plan.plancode}
                       </Typography>
-                    </Box>
+                    </div>
 
                     <Chip
                       label={billingCycle?.name || "-"}
-                      size="small"
                       color="primary"
-                      variant="outlined"
-                      sx={{
-                        fontWeight: 600,
-                        borderRadius: 2,
-                      }}
+                      size="small"
                     />
                   </div>
-                </Box>
 
-                {/* Body */}
-                <CardContent
-                  sx={{
-                    p: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    flex: 1,
-                  }}
-                >
                   {/* Price */}
-                  <Stack
-                    direction="row"
-                    alignItems="baseline"
-                    spacing={1}
-                    sx={{ mb: 3 }}
-                  >
+
+                  <div className="mb-6 rounded-3xl bg-slate-50 p-5 text-center">
                     <Typography
-                      variant="h3"
-                      fontWeight={800}
-                      color="primary.main"
+                      sx={{
+                        fontSize: 40,
+                        fontWeight: 800,
+                        color: "primary.main",
+                      }}
                     >
-                      ₹{Number(plan.price).toLocaleString("en-IN")}
+                      ₹{Number(plan.price || 0).toLocaleString("en-IN")}
                     </Typography>
 
-                    <Typography variant="body2" color="text.secondary">
-                      / {billingCycle?.name?.toLowerCase()}
+                    <Typography
+                      sx={{
+                        color: "text.secondary",
+                      }}
+                    >
+                      per {billingCycle?.name?.toLowerCase()}
                     </Typography>
-                  </Stack>
+                  </div>
 
                   {/* Description */}
+
                   <Typography
-                    variant="body2"
-                    color="text.secondary"
                     sx={{
-                      minHeight: 48,
-                      lineHeight: 1.6,
-                      mb: 3,
+                      mb: 4,
+                      color: "text.secondary",
+                      minHeight: 60,
+                      lineHeight: 1.7,
                     }}
                   >
                     {plan.description || "No description available."}
@@ -199,75 +182,49 @@ const Plans = () => {
                   <Divider sx={{ mb: 3 }} />
 
                   {/* Features */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography
-                      variant="subtitle1"
-                      fontWeight={700}
-                      sx={{ mb: 2 }}
-                    >
-                      What's included
-                    </Typography>
 
-                    <Stack spacing={1.5}>
-                      {plan.features?.length ? (
-                        plan.features.map((feature) => (
-                          <Stack
-                            key={feature}
-                            direction="row"
-                            spacing={1.2}
-                            alignItems="center"
-                          >
-                            <Box
-                              sx={{
-                                width: 22,
-                                height: 22,
-                                borderRadius: "50%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                bgcolor: "#DCFCE7",
-                                color: "#16A34A",
-                                fontSize: 13,
-                                fontWeight: 700,
-                                flexShrink: 0,
-                              }}
-                            >
-                              ✓
-                            </Box>
+                  <div className="mb-4 flex items-center justify-between">
+                    <Typography fontWeight={700}>Features</Typography>
 
-                            <Typography variant="body2">{feature}</Typography>
-                          </Stack>
-                        ))
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">
-                          No features available.
-                        </Typography>
-                      )}
-                    </Stack>
-                  </Box>
+                    <Chip
+                      label={`${plan.features?.length || 0} Included`}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </div>
 
-                  {/* Action */}
-                  {/* Action */}
-                  <Box
-                    sx={{
-                      mt: 4,
-                      display: "flex",
-                      gap: 1.5,
-                    }}
-                  >
+                  <div className="flex flex-1 flex-col gap-3">
+                    {plan.features?.length ? (
+                      plan.features.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-sm font-bold text-green-600">
+                            ✓
+                          </div>
+
+                          <Typography>{feature}</Typography>
+                        </div>
+                      ))
+                    ) : (
+                      <Typography color="text.secondary">
+                        No features available.
+                      </Typography>
+                    )}
+                  </div>
+
+                  {/* Buttons */}
+
+                  <div className="mt-6 flex gap-3">
                     <Button
                       fullWidth
-                      variant="outlined"
+                      variant="contained"
                       startIcon={<Edit />}
                       onClick={() => navigate(`/plans/edit/${plan.planid}`)}
                       sx={{
-                        py: 1.2,
                         borderRadius: 2,
                         textTransform: "none",
-                        fontWeight: 600,
                       }}
                     >
-                      Edit Plan
+                      Edit
                     </Button>
 
                     <Button
@@ -275,16 +232,13 @@ const Plans = () => {
                       color="error"
                       onClick={() => handleDelete(plan)}
                       sx={{
-                        minWidth: 48,
-                        width: 48,
-                        height: 48,
+                        minWidth: 50,
                         borderRadius: 2,
-                        p: 0,
                       }}
                     >
-                      <Delete fontSize="small" />
+                      <Delete />
                     </Button>
-                  </Box>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>

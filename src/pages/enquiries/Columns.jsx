@@ -3,6 +3,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { Avatar, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 
 import StatusChip from "../../components/common/StatusChip";
+import CellContent from "../../components/common/CellContent";
 
 export const columns = (handleEdit, handleDelete, handleConvert) => [
   // ================= HOSPITAL =================
@@ -11,6 +12,7 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
     field: "hospitalname",
     headerName: "Hospital",
     width: 280,
+
     renderCell: (params) => (
       <div className="flex h-full w-full items-center gap-3">
         <Avatar
@@ -34,10 +36,8 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
 
         <div className="flex flex-col justify-center">
           <Typography
-            className="leading-none"
             sx={{
               fontSize: 14,
-              // fontWeight: 700,
               color: "#0F172A",
             }}
           >
@@ -47,10 +47,14 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
       </div>
     ),
   },
+
+  // ================= ENQUIRY NUMBER =================
+
   {
     field: "enquirynumber",
     headerName: "Enquiry No.",
     width: 150,
+
     renderCell: (params) => (
       <StatusChip type="primary" label={params.row.enquirynumber || "-"} />
     ),
@@ -62,11 +66,15 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
     field: "contactperson",
     headerName: "Contact Person",
     width: 180,
+    align: "center",
+    headerAlign: "center",
 
     renderCell: (params) => (
-      <Typography variant="body2" fontWeight={500} noWrap>
-        {params.row.contactperson || "-"}
-      </Typography>
+      <CellContent>
+        <Typography variant="body2" fontWeight={500} noWrap>
+          {params.row.contactperson || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
 
@@ -78,11 +86,13 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
     width: 240,
 
     renderCell: (params) => (
-      <Tooltip title={params.row.email || "-"}>
-        <Typography variant="body2" noWrap color="text.secondary">
-          {params.row.email || "-"}
-        </Typography>
-      </Tooltip>
+      <CellContent>
+        <Tooltip title={params.row.email || "-"}>
+          <Typography variant="body2" noWrap color="text.secondary">
+            {params.row.email || "-"}
+          </Typography>
+        </Tooltip>
+      </CellContent>
     ),
   },
 
@@ -94,9 +104,11 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
     width: 150,
 
     renderCell: (params) => (
-      <Typography variant="body2" fontWeight={500} noWrap>
-        {params.row.phone || "-"}
-      </Typography>
+      <CellContent>
+        <Typography variant="body2" fontWeight={500} noWrap>
+          {params.row.phone || "-"}
+        </Typography>
+      </CellContent>
     ),
   },
 
@@ -108,15 +120,17 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
     width: 220,
 
     renderCell: (params) => (
-      <Tooltip title={params.row.remarks || "-"}>
-        <Typography variant="body2" color="text.secondary" noWrap>
-          {params.row.remarks || "-"}
-        </Typography>
-      </Tooltip>
+      <CellContent>
+        <Tooltip title={params.row.remarks || "-"}>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {params.row.remarks || "-"}
+          </Typography>
+        </Tooltip>
+      </CellContent>
     ),
   },
 
-  // ================= LEAD STATUS =================
+  // ================= LEAD =================
 
   {
     field: "convert",
@@ -161,41 +175,21 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
         justifyContent="center"
         width="100%"
       >
-        {/* Edit */}
-
         <Tooltip title="Edit">
           <IconButton
             size="small"
             color="primary"
             onClick={() => handleEdit(params.row)}
-            sx={{
-              width: 34,
-              height: 34,
-
-              "&:hover": {
-                backgroundColor: "#EFF6FF",
-              },
-            }}
           >
             <Edit fontSize="small" />
           </IconButton>
         </Tooltip>
-
-        {/* Delete */}
 
         <Tooltip title="Delete">
           <IconButton
             size="small"
             color="error"
             onClick={() => handleDelete(params.row)}
-            sx={{
-              width: 34,
-              height: 34,
-
-              "&:hover": {
-                backgroundColor: "#FEF2F2",
-              },
-            }}
           >
             <Delete fontSize="small" />
           </IconButton>

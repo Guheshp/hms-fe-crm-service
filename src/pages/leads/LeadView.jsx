@@ -112,9 +112,9 @@ const LeadView = () => {
         subtitle={`${lead?.hospitalname || "-"} • ${lead?.leadnumber || "-"}`}
         showBackButton
         backPath="/leads"
-        buttonText="Edit Lead"
-        buttonIcon={<Edit />}
-        onButtonClick={() => navigate(`/leads/edit/${id}`)}
+        // buttonText="Edit Lead"
+        // buttonIcon={<Edit />}
+        // onButtonClick={() => navigate(`/leads/edit/${id}`)}
       />
 
       <Card

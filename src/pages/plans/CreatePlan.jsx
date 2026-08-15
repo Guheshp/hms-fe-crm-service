@@ -8,7 +8,7 @@ const CreatePlan = () => {
       <>
         <PageHeader
           showBackButton
-          backText="Plans"
+          backText="Back"
           backPath="/plans"
           title="Create Plan"
           // subtitle="Create a new lead from an enquiry."

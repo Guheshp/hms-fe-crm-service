@@ -1,25 +1,40 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import {
+  Add,
+  LockReset,
+  Logout,
+  NotificationsNone,
+  Person,
+  Search,
+  CalendarMonth,
+  Settings,
+} from "@mui/icons-material";
+
 import {
   AppBar,
   Avatar,
+  Badge,
   Box,
+  Button,
   Divider,
   IconButton,
+  InputBase,
   Menu,
   MenuItem,
+  Paper,
   Stack,
   Typography,
 } from "@mui/material";
 
-import { Logout, LockReset, Person } from "@mui/icons-material";
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import { APP_NAME } from "../constants/app";
 import { COLORS } from "../constants/theme";
 import { useUser } from "../context/UserContext";
 
-const PrivateHeader = () => {
+const PrivateHeader = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
 
   const { user, logout } = useUser();
@@ -67,14 +82,15 @@ const PrivateHeader = () => {
     >
       <Box
         sx={{
-          height: 71.5,
+          height: 65,
+          px: {
+            xs: 2,
+            md: 2,
+          },
+
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          px: {
-            xs: 2,
-            md: 3,
-          },
         }}
       >
         {/* Mobile Logo */}
@@ -85,6 +101,7 @@ const PrivateHeader = () => {
               xs: "flex",
               md: "none",
             },
+
             alignItems: "center",
             gap: 1,
           }}
@@ -93,12 +110,17 @@ const PrivateHeader = () => {
             sx={{
               width: 36,
               height: 36,
+
               borderRadius: 2,
+
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+
               backgroundColor: COLORS.primary,
+
               color: "#FFFFFF",
+
               fontSize: 16,
               fontWeight: 600,
             }}
@@ -110,233 +132,333 @@ const PrivateHeader = () => {
             sx={{
               fontSize: 16,
               fontWeight: 600,
-              color: COLORS.text,
             }}
           >
             {APP_NAME}
           </Typography>
         </Box>
 
-        {/* User Section */}
+        {/* Header Actions */}
 
-        <Box sx={{ ml: "auto" }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          {/* Left Side */}
+
           <IconButton
-            onClick={handleOpenMenu}
+            onClick={() => setCollapsed(!collapsed)}
             sx={{
-              p: 1,
-              borderRadius: 2,
+              width: 42,
+              height: 42,
+
               border: `1px solid ${COLORS.border}`,
 
+              borderRadius: 2,
+
               "&:hover": {
-                backgroundColor: COLORS.background,
+                backgroundColor: "#F8FAFC",
               },
             }}
           >
-            <Stack direction="row" spacing={1.5} alignItems="center">
-              <Box
-                sx={{
-                  display: {
-                    xs: "none",
-                    sm: "block",
-                  },
-                  textAlign: "right",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: COLORS.text,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {fullName || "User"}
-                </Typography>
-
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    color: COLORS.textSecondary,
-                  }}
-                >
-                  Administrator
-                </Typography>
-              </Box>
-
-              <Avatar
-                sx={{
-                  width: 38,
-                  height: 38,
-                  bgcolor: COLORS.primary,
-                  color: "#FFFFFF",
-                  fontSize: 14,
-                  fontWeight: 600,
-                }}
-              >
-                {userInitial}
-              </Avatar>
-            </Stack>
+            <MenuIcon />
           </IconButton>
 
-          {/* Profile Menu */}
+          <Paper
+            elevation={0}
+            sx={{
+              display: {
+                xs: "none",
+                md: "flex",
+              },
 
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleCloseMenu}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            PaperProps={{
-              sx: {
-                mt: 1,
-                width: 240,
-                borderRadius: 2,
-                border: `1px solid ${COLORS.border}`,
-                boxShadow: "0 8px 20px rgba(15,23,42,0.08)",
-                overflow: "hidden",
+              width: 360,
+              height: 44,
+
+              px: 1.5,
+
+              alignItems: "center",
+
+              borderRadius: 3,
+
+              border: `1px solid ${COLORS.border}`,
+
+              backgroundColor: "#FFFFFF",
+
+              boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
+
+              transition: "all 0.2s ease",
+
+              "&:hover": {
+                borderColor: "#CBD5E1",
+              },
+
+              "&:focus-within": {
+                borderColor: COLORS.primary,
+                boxShadow: `0 0 0 4px ${COLORS.primary}15`,
               },
             }}
           >
             <Box
               sx={{
-                px: 2,
-                py: 2,
+                width: 30,
+                height: 30,
+
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+
+                borderRadius: 2,
+
                 backgroundColor: "#F8FAFC",
+
+                mr: 1.5,
               }}
             >
-              <Stack direction="row" spacing={1.5} alignItems="center">
+              <Search
+                sx={{
+                  fontSize: 18,
+                  color: COLORS.textSecondary,
+                }}
+              />
+            </Box>
+
+            <InputBase
+              fullWidth
+              placeholder="Search hospitals, leads, customers..."
+              sx={{
+                fontSize: 14,
+
+                "& input::placeholder": {
+                  color: COLORS.textSecondary,
+                  opacity: 1,
+                },
+              }}
+            />
+          </Paper>
+
+          {/* Right Side */}
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              ml: "auto",
+            }}
+          >
+            <IconButton
+              sx={{
+                width: 42,
+                height: 42,
+
+                border: `1px solid ${COLORS.border}`,
+
+                borderRadius: 2,
+
+                "&:hover": {
+                  backgroundColor: "#F8FAFC",
+                },
+              }}
+            >
+              <CalendarMonth />
+            </IconButton>
+
+            {/* Settings */}
+
+            <IconButton
+              sx={{
+                width: 42,
+                height: 42,
+
+                border: `1px solid ${COLORS.border}`,
+
+                borderRadius: 2,
+
+                "&:hover": {
+                  backgroundColor: "#F8FAFC",
+                },
+              }}
+            >
+              <Settings />
+            </IconButton>
+
+            {/* Notifications */}
+
+            <IconButton
+              sx={{
+                width: 42,
+                height: 42,
+
+                border: `1px solid ${COLORS.border}`,
+
+                borderRadius: 2,
+
+                "&:hover": {
+                  backgroundColor: "#F8FAFC",
+                },
+              }}
+            >
+              <Badge badgeContent={5} color="error">
+                <NotificationsNone />
+              </Badge>
+            </IconButton>
+
+            {/* Profile */}
+
+            <IconButton
+              onClick={handleOpenMenu}
+              sx={{
+                p: 1,
+
+                borderRadius: 2,
+
+                border: `1px solid ${COLORS.border}`,
+
+                "&:hover": {
+                  backgroundColor: "#F8FAFC",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: {
+                      xs: "none",
+                      sm: "block",
+                    },
+
+                    textAlign: "right",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {fullName || "User"}
+                  </Typography>
+                </Box>
+
                 <Avatar
                   sx={{
-                    width: 42,
-                    height: 42,
+                    width: 32,
+                    height: 32,
+
                     bgcolor: COLORS.primary,
+
+                    color: "#FFFFFF",
+
+                    fontSize: 13,
                     fontWeight: 600,
                   }}
                 >
                   {userInitial}
                 </Avatar>
+              </Box>
+            </IconButton>
 
-                <Box minWidth={0}>
-                  <Typography
-                    sx={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                    }}
-                    noWrap
-                  >
-                    {fullName || "User"}
-                  </Typography>
+            {/* Profile Menu */}
 
-                  <Typography
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseMenu}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+
+                  width: 240,
+
+                  borderRadius: 3,
+
+                  border: `1px solid ${COLORS.border}`,
+
+                  overflow: "hidden",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  px: 2,
+                  py: 2,
+
+                  backgroundColor: "#F8FAFC",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                  }}
+                >
+                  <Avatar
                     sx={{
-                      fontSize: 12,
-                      color: COLORS.textSecondary,
+                      bgcolor: COLORS.primary,
                     }}
-                    noWrap
                   >
-                    {user?.email || "Administrator"}
-                  </Typography>
+                    {userInitial}
+                  </Avatar>
+
+                  <Box>
+                    <Typography fontWeight={600}>
+                      {fullName || "User"}
+                    </Typography>
+
+                    <Typography variant="body2" color={COLORS.textSecondary}>
+                      {user?.email}
+                    </Typography>
+                  </Box>
                 </Box>
-              </Stack>
-            </Box>
+              </Box>
 
-            <Divider />
+              <Divider />
 
-            <MenuItem
-              onClick={handleCloseMenu}
-              sx={{
-                py: 1.2,
-                px: 2,
-
-                "&:hover": {
-                  backgroundColor: "#F8FAFC",
-                },
-              }}
-            >
-              <Person
-                fontSize="small"
-                sx={{
-                  mr: 1.5,
-                  color: COLORS.textSecondary,
-                }}
-              />
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                }}
-              >
+              <MenuItem onClick={handleCloseMenu}>
+                <Person sx={{ mr: 1.5 }} />
                 My Profile
-              </Typography>
-            </MenuItem>
+              </MenuItem>
 
-            <MenuItem
-              onClick={handleCloseMenu}
-              sx={{
-                py: 1.2,
-                px: 2,
-
-                "&:hover": {
-                  backgroundColor: "#F8FAFC",
-                },
-              }}
-            >
-              <LockReset
-                fontSize="small"
-                sx={{
-                  mr: 1.5,
-                  color: COLORS.textSecondary,
-                }}
-              />
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                }}
-              >
+              <MenuItem onClick={handleCloseMenu}>
+                <LockReset sx={{ mr: 1.5 }} />
                 Change Password
-              </Typography>
-            </MenuItem>
+              </MenuItem>
 
-            <Divider />
+              <Divider />
 
-            <MenuItem
-              onClick={handleLogout}
-              sx={{
-                py: 1.2,
-                px: 2,
-                color: COLORS.error,
-
-                "&:hover": {
-                  backgroundColor: COLORS.errorLight,
-                },
-              }}
-            >
-              <Logout
-                fontSize="small"
+              <MenuItem
+                onClick={handleLogout}
                 sx={{
-                  mr: 1.5,
-                }}
-              />
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 500,
+                  color: COLORS.error,
                 }}
               >
+                <Logout sx={{ mr: 1.5 }} />
                 Logout
-              </Typography>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Box>
         </Box>
       </Box>
     </AppBar>
