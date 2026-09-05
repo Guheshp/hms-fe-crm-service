@@ -1,17 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
-
-import { Edit } from "@mui/icons-material";
+import { Card, Tab, Tabs } from "@mui/material";
 
 import PageHeader from "../../components/common/PageHeader";
 
@@ -24,83 +14,103 @@ import { getLeadById } from "../../api/leads";
 import { getSubscriptions } from "../../api/subscriptions";
 
 import { errorAlert } from "../../utils/alerts";
-
 import { COLORS } from "../../constants/theme";
 
 const LeadView = () => {
-  const navigate = useNavigate();
-
   const { id } = useParams();
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [lead, setLead] = useState(null);
-
   const [subscriptions, setSubscriptions] = useState([]);
-
   const [loadingSubscriptions, setLoadingSubscriptions] = useState(false);
 
   const tab = searchParams.get("tab") || "details";
 
-  const getLead = async () => {
-    try {
-      const response = await getLeadById(id);
-
-      setLead(response.data.data);
-    } catch (error) {
-      errorAlert(error.response?.data?.message || "Failed to fetch lead.");
-    }
-  };
-
-  const getLeadSubscriptions = async () => {
-    try {
-      setLoadingSubscriptions(true);
-
-      const response = await getSubscriptions({
-        leadid: id,
-        page: 1,
-        limit: 100,
-      });
-
-      setSubscriptions(response.data.data || []);
-    } catch (error) {
-      errorAlert(
-        error.response?.data?.message || "Failed to fetch subscriptions.",
-      );
-    } finally {
-      setLoadingSubscriptions(false);
-    }
-  };
-
+  // --------------------------------
+  // Get Lead
+  // --------------------------------
   useEffect(() => {
     if (!id) return;
 
+    const getLead = async () => {
+      try {
+        const response = await getLeadById(id);
+
+        setLead(response?.data?.data || null);
+      } catch (error) {
+        errorAlert(error?.response?.data?.message || "Failed to fetch lead.");
+      }
+    };
+
     getLead();
+  }, [id]);
+
+  // --------------------------------
+  // Get Subscriptions
+  // --------------------------------
+  useEffect(() => {
+    if (!id) return;
+
+    const getLeadSubscriptions = async () => {
+      try {
+        setLoadingSubscriptions(true);
+
+        const response = await getSubscriptions({
+          leadid: id,
+          page: 1,
+          limit: 100,
+        });
+
+        const data = response?.data?.data;
+
+        setSubscriptions(Array.isArray(data) ? data : []);
+      } catch (error) {
+        setSubscriptions([]);
+
+        errorAlert(
+          error?.response?.data?.message || "Failed to fetch subscriptions.",
+        );
+      } finally {
+        setLoadingSubscriptions(false);
+      }
+    };
+
     getLeadSubscriptions();
   }, [id]);
 
-  const hasActiveSubscription = subscriptions?.some(
-    (subscription) => Number(subscription.subscriptionstatus) === 1,
+  // --------------------------------
+  // Active Subscription
+  // --------------------------------
+  const hasActiveSubscription = subscriptions.some(
+    (subscription) => Number(subscription?.subscriptionstatus) === 1,
   );
 
+  // --------------------------------
+  // Tab Change
+  // --------------------------------
   const handleTabChange = (_, value) => {
-    if (value === "payments" && !hasActiveSubscription) {
+    if (
+      value === "payments" &&
+      (loadingSubscriptions || !hasActiveSubscription)
+    ) {
       return;
     }
 
-    setSearchParams({
-      tab: value,
-    });
+    setSearchParams({ tab: value });
   };
 
+  // --------------------------------
+  // Protect Payments Tab
+  // --------------------------------
   useEffect(() => {
     if (tab === "payments" && !loadingSubscriptions && !hasActiveSubscription) {
-      setSearchParams({
-        tab: "details",
-      });
+      setSearchParams({ tab: "details" }, { replace: true });
     }
-  }, [tab, loadingSubscriptions, hasActiveSubscription]);
+  }, [tab, loadingSubscriptions, hasActiveSubscription, setSearchParams]);
 
+  // --------------------------------
+  // Lead Name
+  // --------------------------------
   const leadName =
     [lead?.firstname, lead?.lastname].filter(Boolean).join(" ") ||
     "Lead Details";
@@ -112,11 +122,9 @@ const LeadView = () => {
         subtitle={`${lead?.hospitalname || "-"} • ${lead?.leadnumber || "-"}`}
         showBackButton
         backPath="/leads"
-        // buttonText="Edit Lead"
-        // buttonIcon={<Edit />}
-        // onButtonClick={() => navigate(`/leads/edit/${id}`)}
       />
 
+      {/* Tabs */}
       <Card
         elevation={0}
         sx={{
@@ -137,7 +145,6 @@ const LeadView = () => {
             },
 
             "& .MuiTab-root": {
-              // minHeight: 42,
               px: 3,
               mr: 1,
               borderRadius: 2,
@@ -147,7 +154,7 @@ const LeadView = () => {
               color: COLORS.textSecondary,
             },
 
-            "& .Mui-selected": {
+            "& .MuiTab-root.Mui-selected": {
               backgroundColor: COLORS.primaryLight,
               color: COLORS.primary,
               fontWeight: 600,
@@ -171,13 +178,16 @@ const LeadView = () => {
         </Tabs>
       </Card>
 
+      {/* Tab Content */}
       {tab === "details" && <Details id={id} />}
 
       {tab === "followups" && <FollowUps id={id} />}
 
       {tab === "subscriptions" && <Subscriptions leadId={id} />}
 
-      {tab === "payments" && hasActiveSubscription && <Payments leadId={id} />}
+      {tab === "payments" && !loadingSubscriptions && hasActiveSubscription && (
+        <Payments leadId={id} />
+      )}
     </>
   );
 };

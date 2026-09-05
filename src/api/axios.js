@@ -2,9 +2,6 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 const publicRoutes = [
@@ -16,19 +13,28 @@ const publicRoutes = [
   "/onboarding/create",
 ];
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-  const isPublicRoute = publicRoutes.some((route) =>
-    config.url.includes(route),
-  );
+    const isPublicRoute = publicRoutes.some((route) =>
+      config.url?.includes(route),
+    );
 
-  if (!isPublicRoute && token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    if (!isPublicRoute && token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-});
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    } else {
+      config.headers["Content-Type"] = "application/json";
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
 api.interceptors.response.use(
   (response) => response,

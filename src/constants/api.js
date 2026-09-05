@@ -12,6 +12,7 @@ export const API = {
   PLANS: "/plans",
   PLANFEATURES: "/planfeatures",
   PAYMENTS: "/payments",
+  DASHBOARD: "/dashboard",
 };
 
 export const PRIORITY_OPTIONS = [

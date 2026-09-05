@@ -10,6 +10,9 @@ export const createLead = (data) => {
 export const getLeads = (data) => {
   return api.post(`${API.LEADS}/get`, data);
 };
+export const getCustomer = (data) => {
+  return api.post(`${API.LEADS}/getcustomer`, data);
+};
 
 // Get Lead By Id
 export const getLeadById = (id) => {

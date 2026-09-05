@@ -9,10 +9,20 @@ import DataGridTable from "../../components/common/DataGridTable";
 import { columns } from "./Columns";
 import { errorAlert, successAlert } from "../../utils/alerts";
 import { confirmDelete } from "../../utils/confirm";
+import useImport from "../../hooks/useImport";
+import useExport from "../../hooks/useExport";
 
 const FollowUps = ({ id }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [selectedRows, setSelectedRows] = useState({
+    type: "include",
+    ids: new Set(),
+  });
+
+  const { handleImport, loading: importLoading } = useImport([]);
+  const { handleExport, loading: exportLoading } = useExport([]);
 
   const [followUps, setFollowUps] = useState([]);
 
@@ -93,6 +103,46 @@ const FollowUps = ({ id }) => {
   const filteredFollowUps = followUps.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(search.toLowerCase()),
   );
+  const handleSelectionChange = (model) => {
+    console.log(model);
+    setSelectedRows(model);
+  };
+
+  const handleBulkDelete = async () => {
+    const selectedIds = Array.from(selectedRows.ids);
+
+    if (!selectedIds.length) return;
+
+    const result = await confirmDelete(
+      "Delete Follow Ups?",
+      `Are you sure you want to delete ${selectedIds.length} selected Follow Ups?`,
+    );
+
+    if (!result.isConfirmed) return;
+
+    try {
+      setLoading(true);
+
+      // for (const id of selectedIds) {
+      //   await deleteEnquiry(id);
+      // }
+
+      successAlert("Selected Follow Ups deleted successfully.");
+
+      setSelectedRows({
+        type: "include",
+        ids: new Set(),
+      });
+
+      await getAllFollowUps();
+    } catch (error) {
+      errorAlert(
+        error.response?.data?.message || "Failed to delete Follow Ups.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -120,6 +170,12 @@ const FollowUps = ({ id }) => {
           rowCount={filteredFollowUps.length}
           search={search}
           onSearch={setSearch}
+          onDelete={handleBulkDelete}
+          onImport={handleImport}
+          onExport={handleExport}
+          checkboxSelection
+          rowSelectionModel={selectedRows}
+          onRowSelectionModelChange={handleSelectionChange}
           onPageChange={(page) =>
             setParams((prev) => ({
               ...prev,

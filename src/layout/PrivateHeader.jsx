@@ -354,19 +354,13 @@ const PrivateHeader = ({ collapsed, setCollapsed }) => {
                 </Box>
 
                 <Avatar
+                  src={user?.profileimageurl || ""}
+                  alt={user?.firstname || "User"}
                   sx={{
-                    width: 32,
-                    height: 32,
-
                     bgcolor: COLORS.primary,
-
-                    color: "#FFFFFF",
-
-                    fontSize: 13,
-                    fontWeight: 600,
                   }}
                 >
-                  {userInitial}
+                  {!user?.profileimageurl && userInitial}
                 </Avatar>
               </Box>
             </IconButton>
@@ -399,44 +393,12 @@ const PrivateHeader = ({ collapsed, setCollapsed }) => {
                 },
               }}
             >
-              <Box
-                sx={{
-                  px: 2,
-                  py: 2,
-
-                  backgroundColor: "#F8FAFC",
+              <MenuItem
+                onClick={() => {
+                  handleCloseMenu();
+                  navigate(`/profile/${user?.id}`);
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1.5,
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      bgcolor: COLORS.primary,
-                    }}
-                  >
-                    {userInitial}
-                  </Avatar>
-
-                  <Box>
-                    <Typography fontWeight={600}>
-                      {fullName || "User"}
-                    </Typography>
-
-                    <Typography variant="body2" color={COLORS.textSecondary}>
-                      {user?.email}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-
-              <Divider />
-
-              <MenuItem onClick={handleCloseMenu}>
                 <Person sx={{ mr: 1.5 }} />
                 My Profile
               </MenuItem>

@@ -175,7 +175,7 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
         justifyContent="center"
         width="100%"
       >
-        <Tooltip title="Edit">
+        {/* <Tooltip title="Edit">
           <IconButton
             size="small"
             color="primary"
@@ -183,7 +183,7 @@ export const columns = (handleEdit, handleDelete, handleConvert) => [
           >
             <Edit fontSize="small" />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
 
         <Tooltip title="Delete">
           <IconButton

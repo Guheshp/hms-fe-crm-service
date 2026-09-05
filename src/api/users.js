@@ -5,6 +5,9 @@ import api from "./axios";
 export const get = (data) => {
   return api.post(`${API.USERS}/get`, data);
 };
+export const updateProfileImage = (data) => {
+  return api.post(`${API.USERS}/update-profile-image`, data);
+};
 
 // Get User By Id
 export const getById = (id) => {

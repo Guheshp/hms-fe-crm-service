@@ -7,6 +7,7 @@ import {
   People,
   Subscriptions,
   TrendingUp,
+  Business,
 } from "@mui/icons-material";
 
 import {
@@ -43,6 +44,11 @@ const menuItems = [
     label: "Leads",
     icon: <TrendingUp />,
     path: "/leads",
+  },
+  {
+    label: "Customer",
+    icon: <Business />,
+    path: "/customers",
   },
   {
     label: "Plans",
@@ -93,9 +99,10 @@ const Sidebar = ({ collapsed }) => {
         to={item.path}
         selected={active}
         sx={{
-          minHeight: 52,
+          minHeight: 20,
           mb: 1,
-          px: collapsed ? 0 : 2,
+          backgroundColor: "#EEF4FF",
+          px: collapsed ? 0 : 1,
           justifyContent: collapsed ? "center" : "flex-start",
           borderRadius: 3,
           position: "relative",

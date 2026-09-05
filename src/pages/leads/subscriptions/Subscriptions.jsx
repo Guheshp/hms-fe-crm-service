@@ -13,11 +13,22 @@ import { errorAlert } from "../../../utils/alerts";
 import { subscriptionColumns } from "./subscriptionColumns";
 
 import { useNavigate } from "react-router-dom";
+import useImport from "../../../hooks/useImport";
+import useExport from "../../../hooks/useExport";
+import { confirmDelete } from "../../../utils/confirm";
+// import { confirmDelete } from "../../utils/confirm";
 
 const Subscriptions = ({ leadId }) => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const { handleImport, loading: importLoading } = useImport([]);
+  const { handleExport, loading: exportLoading } = useExport([]);
+
+  const [selectedRows, setSelectedRows] = useState({
+    type: "include",
+    ids: new Set(),
+  });
   const navigate = useNavigate();
 
   const [params, setParams] = useState({
@@ -100,6 +111,47 @@ const Subscriptions = ({ leadId }) => {
     ? moment(Number(activeSubscription.enddate)).format("DD/MM/YYYY")
     : null;
 
+  const handleBulkDelete = async () => {
+    const selectedIds = Array.from(selectedRows.ids);
+
+    if (!selectedIds.length) return;
+
+    const result = await confirmDelete(
+      "Delete Subscription?",
+      `Are you sure you want to delete ${selectedIds.length} selected Subscription?`,
+    );
+
+    if (!result.isConfirmed) return;
+
+    try {
+      setLoading(true);
+
+      // for (const id of selectedIds) {
+      //   await deleteEnquiry(id);
+      // }
+
+      successAlert("Selected Subscription deleted successfully.");
+
+      setSelectedRows({
+        type: "include",
+        ids: new Set(),
+      });
+
+      await getAllSubscriptions();
+    } catch (error) {
+      errorAlert(
+        error.response?.data?.message || "Failed to delete Subscription.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectionChange = (model) => {
+    console.log(model);
+    setSelectedRows(model);
+  };
+
   return (
     <>
       <PageHeader
@@ -172,6 +224,12 @@ const Subscriptions = ({ leadId }) => {
           page={params.page - 1}
           pageSize={params.limit}
           rowCount={totalRecords}
+          onDelete={handleBulkDelete}
+          onImport={handleImport}
+          onExport={handleExport}
+          checkboxSelection
+          rowSelectionModel={selectedRows}
+          onRowSelectionModelChange={handleSelectionChange}
           onPageChange={(page) =>
             setParams((prev) => ({
               ...prev,

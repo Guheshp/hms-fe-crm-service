@@ -21,6 +21,9 @@ import planRoutes from "./PlanRoute";
 import paymentRoutes from "./PaymentRoutes";
 import subscriptionsRoutes from "./Subscriptions";
 import ReportRoutes from "./ReportRoutes";
+import customerRoutes from "./Customer";
+import ProfileRoute from "./ProfileRoute";
+import NotFound from "../pages/NotFound";
 
 const router = createBrowserRouter([
   // Public Routes
@@ -67,7 +70,13 @@ const router = createBrowserRouter([
       ...subscriptionsRoutes,
       ...paymentRoutes,
       ...ReportRoutes,
+      ...customerRoutes,
+      ...ProfileRoute,
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
