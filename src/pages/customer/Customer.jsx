@@ -85,7 +85,7 @@ const Customer = () => {
   }, []);
 
   const handleEdit = (row) => {
-    navigate(`/leads/edit/${row.id}`);
+    navigate(`/customers/edit/${row.id}`);
   };
 
   const handleDelete = async (row) => {
@@ -193,7 +193,7 @@ const Customer = () => {
     <>
       <PageHeader
         title={`All Customers (${totalRecords})`}
-        buttonText="Create Lead"
+        // buttonText="Create Lead"
         buttonIcon={<Add />}
         onButtonClick={() => navigate("/leads/create")}
       />

@@ -13,6 +13,8 @@ export const API = {
   PLANFEATURES: "/planfeatures",
   PAYMENTS: "/payments",
   DASHBOARD: "/dashboard",
+  CALLS: "/calls",
+  CUSTOMER_FOLLOWUPS: "customerfollowups",
 };
 
 export const PRIORITY_OPTIONS = [

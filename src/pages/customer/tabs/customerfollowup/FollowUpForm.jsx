@@ -5,27 +5,38 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
+
 import { Close } from "@mui/icons-material";
 
-import InputField from "../../components/forms/InputField";
-import DateField from "../../components/forms/DateField";
-import Dropdown from "../../components/forms/Dropdown";
-import CustomButton from "../../components/common/Button";
-
-import { useUser } from "../../context/UserContext";
-
-import { FOLLOWUP_MODE_OPTIONS } from "../../constants/app";
-
+import InputField from "../../../../components/forms/InputField";
+import DateField from "../../../../components/forms/DateField";
+import Dropdown from "../../../../components/forms/Dropdown";
+import CustomButton from "../../../../components/common/Button";
+import { useUser } from "../../../../context/UserContext";
 import {
-  createLeadFollowUp,
-  updateLeadFollowUp,
-} from "../../api/leadFollowUps";
+  createCustomerFollowUp,
+  updateCustomerFollowUp,
+} from "../../../../api/customerFollowUps";
+import { errorAlert, successAlert } from "../../../../utils/alerts";
 
-import { getLeadById, updateLeadStatus } from "../../api/leads";
-
-import { getLeadStatuses } from "../../api/leadStatus";
-
-import { successAlert, errorAlert } from "../../utils/alerts";
+const MODE_OPTIONS = [
+  {
+    id: 1,
+    name: "Call",
+  },
+  {
+    id: 2,
+    name: "Email",
+  },
+  {
+    id: 3,
+    name: "Meeting",
+  },
+  {
+    id: 4,
+    name: "WhatsApp",
+  },
+];
 
 const schema = yup.object({
   followupdate: yup
@@ -33,8 +44,6 @@ const schema = yup.object({
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .nullable()
     .required("Follow Up Date is required."),
-
-  leadstatusid: yup.string().required("Lead Status is required."),
 
   mode: yup
     .number()
@@ -47,14 +56,19 @@ const schema = yup.object({
     .date()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .nullable(),
+
+  status: yup
+    .number()
+    .required("Status is required.")
+    .typeError("Status is required."),
 });
 
 const defaultValues = {
   followupdate: moment().format("YYYY-MM-DD"),
-  leadstatusid: "",
   mode: "",
   remarks: "",
   nextfollowupdate: "",
+  status: 1,
 };
 
 const FollowUpForm = ({
@@ -67,46 +81,15 @@ const FollowUpForm = ({
   const { user } = useUser();
 
   const [loading, setLoading] = useState(false);
-  const [leadStatuses, setLeadStatuses] = useState([]);
 
-  const { control, handleSubmit, setValue, reset } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   });
 
-  const getAllLeadStatuses = async () => {
-    try {
-      const response = await getLeadStatuses({
-        page: 1,
-        limit: 100,
-      });
-
-      setLeadStatuses(response.data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getLead = async () => {
-    try {
-      const response = await getLeadById(leadId);
-
-      const lead = response.data.data;
-
-      setValue("leadstatusid", lead.leadstatusid);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (leadId) {
-      getLead();
-    }
-
-    getAllLeadStatuses();
-  }, [leadId]);
-
+  // --------------------------------
+  // Reset Form
+  // --------------------------------
   useEffect(() => {
     if (!isEdit || !followUp) {
       reset(defaultValues);
@@ -118,38 +101,53 @@ const FollowUpForm = ({
         ? moment(Number(followUp.followupdate)).format("YYYY-MM-DD")
         : moment().format("YYYY-MM-DD"),
 
+      mode:
+        followUp.mode !== null && followUp.mode !== undefined
+          ? Number(followUp.mode)
+          : "",
+
+      remarks: followUp.remarks || "",
+
       nextfollowupdate: followUp.nextfollowupdate
         ? moment(Number(followUp.nextfollowupdate)).format("YYYY-MM-DD")
         : "",
 
-      leadstatusid: followUp.leadstatusid || "",
-
-      mode: Number(followUp.mode),
-
-      remarks: followUp.remarks || "",
+      status:
+        followUp.status !== null && followUp.status !== undefined
+          ? Number(followUp.status)
+          : 1,
     });
   }, [followUp, isEdit, reset]);
 
+  // --------------------------------
+  // Submit
+  // --------------------------------
   const onSubmit = async (data) => {
     try {
       setLoading(true);
 
       const payload = {
         leadid: leadId,
+
         followupdate: moment(data.followupdate).valueOf(),
+
+        mode: Number(data.mode),
+
+        remarks: data.remarks?.trim() || null,
+
         nextfollowupdate: data.nextfollowupdate
           ? moment(data.nextfollowupdate).valueOf()
           : null,
-        leadstatusid: data.leadstatusid,
-        mode: data.mode,
-        remarks: data.remarks?.trim() || null,
+
+        status: Number(data.status),
+
         createdby: user.id,
       };
 
       let response;
 
       if (isEdit) {
-        response = await updateLeadFollowUp({
+        response = await updateCustomerFollowUp({
           id: followUp.id,
           ...payload,
         });
@@ -158,20 +156,14 @@ const FollowUpForm = ({
           response.data.message || "Follow up updated successfully.",
         );
       } else {
-        response = await createLeadFollowUp(payload);
+        response = await createCustomerFollowUp(payload);
 
         successAlert(
           response.data.message || "Follow up created successfully.",
         );
       }
 
-      // Update Lead Status
-      await updateLeadStatus({
-        id: leadId,
-        leadstatusid: data.leadstatusid,
-      });
-
-      // Refresh Follow Ups Table
+      // Refresh Table
       if (getAllFollowUps) {
         await getAllFollowUps();
       }
@@ -190,6 +182,7 @@ const FollowUpForm = ({
 
   return (
     <>
+      {/* Header */}
       <Stack
         direction="row"
         alignItems="center"
@@ -214,7 +207,7 @@ const FollowUpForm = ({
           <Typography variant="body2" color="text.secondary">
             {isEdit
               ? "Update follow up information."
-              : "Record a follow up for this lead."}
+              : "Create a follow up for this customer."}
           </Typography>
         </Box>
 
@@ -239,6 +232,7 @@ const FollowUpForm = ({
 
       <Divider />
 
+      {/* Form */}
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
         <Box
           sx={{
@@ -247,6 +241,7 @@ const FollowUpForm = ({
             flexDirection: "column",
           }}
         >
+          {/* Follow Up Date */}
           <Controller
             name="followupdate"
             control={control}
@@ -261,6 +256,7 @@ const FollowUpForm = ({
             )}
           />
 
+          {/* Follow Up Mode */}
           <Controller
             name="mode"
             control={control}
@@ -268,7 +264,7 @@ const FollowUpForm = ({
               <Dropdown
                 label="Follow Up Mode"
                 required
-                options={FOLLOWUP_MODE_OPTIONS}
+                options={MODE_OPTIONS}
                 value={field.value}
                 onChange={(value) => field.onChange(Number(value))}
                 valueKey="id"
@@ -279,24 +275,39 @@ const FollowUpForm = ({
             )}
           />
 
+          {/* Status */}
           <Controller
-            name="leadstatusid"
+            name="status"
             control={control}
             render={({ field, fieldState }) => (
               <Dropdown
-                label="Lead Status"
+                label="Status"
                 required
-                options={leadStatuses}
+                options={[
+                  {
+                    id: 1,
+                    name: "Pending",
+                  },
+                  {
+                    id: 2,
+                    name: "Completed",
+                  },
+                  {
+                    id: 3,
+                    name: "Cancelled",
+                  },
+                ]}
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(value) => field.onChange(Number(value))}
                 valueKey="id"
                 labelKey="name"
-                placeholder="Select Lead Status"
+                placeholder="Select Status"
                 error={fieldState.error}
               />
             )}
           />
 
+          {/* Next Follow Up Date */}
           <Controller
             name="nextfollowupdate"
             control={control}
@@ -310,6 +321,7 @@ const FollowUpForm = ({
             )}
           />
 
+          {/* Remarks */}
           <Controller
             name="remarks"
             control={control}
@@ -326,6 +338,7 @@ const FollowUpForm = ({
           />
         </Box>
 
+        {/* Footer */}
         <Box
           sx={{
             px: 3,

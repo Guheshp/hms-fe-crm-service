@@ -71,7 +71,11 @@ const Leads = () => {
         limit: 100,
       });
 
-      setLeadStatuses(response.data.data);
+      const statuses = response.data.data || [];
+
+      setLeadStatuses(
+        statuses.filter((status) => status.name?.toLowerCase() !== "won"),
+      );
     } catch (error) {
       console.error(error);
       errorAlert(

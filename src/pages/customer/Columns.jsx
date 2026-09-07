@@ -56,7 +56,7 @@ export const columns = (
         <div className="flex flex-col justify-center gap-1">
           <Typography
             component={Link}
-            to={`/leads/${row.id}`}
+            to={`/customers/${row.id}`}
             sx={{
               fontSize: 14,
               fontWeight: 500,
@@ -134,52 +134,6 @@ export const columns = (
     ),
   },
 
-  // ================= STATUS =================
-
-  {
-    field: "leadstatus",
-    headerName: "Status",
-    width: 150,
-    renderCell: ({ row }) => (
-      <StatusChip type="primary" label={row.leadstatus || "-"} />
-    ),
-  },
-
-  // ================= PRIORITY =================
-
-  {
-    field: "priority",
-    headerName: "Priority",
-    width: 140,
-    renderCell: ({ row }) => {
-      const priority = PRIORITY_OPTIONS.find(
-        (item) => item.id === Number(row.priority),
-      );
-
-      return (
-        <StatusChip
-          color={priority?.color || "info"}
-          label={priority?.name || "-"}
-        />
-      );
-    },
-  },
-
-  // ================= SOURCE =================
-
-  {
-    field: "source",
-    headerName: "Source",
-    width: 140,
-    renderCell: ({ row }) => {
-      const source = SOURCE_OPTIONS.find(
-        (item) => item.id === Number(row.source),
-      );
-
-      return <StatusChip type="info" label={source?.name || "-"} />;
-    },
-  },
-
   // ================= LOCATION =================
 
   {
@@ -218,53 +172,6 @@ export const columns = (
         >
           {row.assignedto || "-"}
         </Typography>
-      </CellContent>
-    ),
-  },
-
-  // ================= EXPECTED AMOUNT =================
-
-  {
-    field: "expectedamount",
-    headerName: "Expected Amount",
-    width: 180,
-    align: "right",
-    headerAlign: "right",
-    renderCell: ({ row }) => (
-      <CellContent>
-        <Typography
-          sx={{
-            width: "100%",
-            textAlign: "right",
-            fontSize: 14,
-            fontWeight: 500,
-          }}
-        >
-          ₹{Number(row.expectedamount || 0).toLocaleString("en-IN")}
-        </Typography>
-      </CellContent>
-    ),
-  },
-
-  // ================= REMARKS =================
-
-  {
-    field: "remarks",
-    headerName: "Remarks",
-    width: 250,
-    sortable: false,
-    renderCell: ({ row }) => (
-      <CellContent>
-        <Tooltip title={row.remarks || "-"}>
-          <Typography
-            noWrap
-            sx={{
-              fontSize: 14,
-            }}
-          >
-            {row.remarks || "-"}
-          </Typography>
-        </Tooltip>
       </CellContent>
     ),
   },

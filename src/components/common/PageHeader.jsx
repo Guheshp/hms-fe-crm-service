@@ -38,7 +38,7 @@ const PageHeader = ({
         <Typography
           sx={{
             fontSize: 24,
-            fontWeight: 600,
+            // fontWeight: 600,
             color: COLORS.text,
             lineHeight: 1.2,
           }}
@@ -71,21 +71,21 @@ const PageHeader = ({
             variant="outlined"
             startIcon={<ArrowBack />}
             onClick={handleBack}
-            sx={{
-              height: 40,
-              px: 2.5,
-              borderRadius: 2,
-              textTransform: "none",
-              fontSize: 14,
-              fontWeight: 600,
-              borderColor: COLORS.border,
-              color: COLORS.text,
+            // sx={{
+            //   height: 40,
+            //   px: 2.5,
+            //   borderRadius: 2,
+            //   textTransform: "none",
+            //   fontSize: 14,
+            //   fontWeight: 600,
+            //   borderColor: COLORS.border,
+            //   color: COLORS.text,
 
-              "&:hover": {
-                borderColor: COLORS.primary,
-                backgroundColor: COLORS.primaryLight,
-              },
-            }}
+            //   "&:hover": {
+            //     borderColor: COLORS.primary,
+            //     backgroundColor: COLORS.primaryLight,
+            //   },
+            // }}
           >
             {backText}
           </Button>
@@ -99,7 +99,6 @@ const PageHeader = ({
                 startIcon={buttonIcon}
                 onClick={onButtonClick}
                 disabled={buttonDisabled}
-                sx={BUTTON_STYLES}
               >
                 {buttonText}
               </Button>

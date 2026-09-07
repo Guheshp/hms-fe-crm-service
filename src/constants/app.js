@@ -83,3 +83,37 @@ export const PAYMENT_GATEWAY_OPTIONS = [
     name: "Razorpay",
   },
 ];
+
+export const CALL_TYPE_OPTIONS = [
+  {
+    id: 1,
+    name: "Outgoing",
+  },
+  {
+    id: 2,
+    name: "Incoming",
+  },
+];
+
+export const CALL_STATUS_OPTIONS = [
+  {
+    id: 1,
+    name: "Connected",
+  },
+  {
+    id: 2,
+    name: "No Answer",
+  },
+  {
+    id: 3,
+    name: "Busy",
+  },
+  {
+    id: 4,
+    name: "Call Back Later",
+  },
+  {
+    id: 5,
+    name: "Wrong Number",
+  },
+];
