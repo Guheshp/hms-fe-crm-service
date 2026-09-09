@@ -1,4 +1,4 @@
-import CreateLead from "../pages/leads/Createlead";
+import CreateLead from "../pages/leads/CreateLead";
 import LeadEdit from "../pages/leads/LeadEdit";
 import Leads from "../pages/leads/Leads";
 import LeadView from "../pages/leads/LeadView";
