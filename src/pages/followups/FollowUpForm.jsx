@@ -23,7 +23,7 @@ import {
 
 import { getLeadById, updateLeadStatus } from "../../api/leads";
 
-import { getLeadStatuses } from "../../api/leadStatus";
+import { getLeadStatuses } from "../../api/leadstatus";
 
 import { successAlert, errorAlert } from "../../utils/alerts";
 

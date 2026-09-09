@@ -21,7 +21,7 @@ import { getEnquiryById } from "../../api/enquiries";
 import { successAlert, errorAlert } from "../../utils/alerts";
 
 import useCountryState from "../../hooks/useCountryState";
-import { getLeadStatuses } from "../../api/leadStatus";
+import { getLeadStatuses } from "../../api/leadstatus.js";
 import { PRIORITY_OPTIONS, SOURCE_OPTIONS } from "../../constants/api";
 import { get } from "../../api/users";
 import Dropdown from "../../components/forms/Dropdown";

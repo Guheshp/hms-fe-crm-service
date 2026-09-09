@@ -14,7 +14,7 @@ import CustomTable from "../../components/common/CustomTable";
 
 import { columns } from "./Columns";
 import DataGridTable from "../../components/common/DataGridTable";
-import { getLeadStatuses } from "../../api/leadStatus";
+import { getLeadStatuses } from "../../api/leadstatus";
 import useImport from "../../hooks/useImport";
 import useExport from "../../hooks/useExport";
 
