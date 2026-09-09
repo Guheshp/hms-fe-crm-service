@@ -12,7 +12,7 @@ import InputField from "../../components/forms/InputField";
 import CustomButton from "../../components/common/Button";
 import PageHeader from "../../components/common/PageHeader";
 import { getLeadById, updateLead } from "../../api/leads";
-import { getLeadStatuses } from "../../api/leadStatus";
+import { getLeadStatuses } from "../../api/leadstatus";
 import { get as getUsers } from "../../api/users";
 
 import { successAlert, errorAlert } from "../../utils/alerts";
